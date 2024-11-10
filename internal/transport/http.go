@@ -36,12 +36,20 @@ func NewServer(todoSvc *todo.Service) *Server {
 	})
 
 	mux.HandleFunc("GET /todo", func(writer http.ResponseWriter, request *http.Request) {
-
-		err := json.NewEncoder(writer).Encode(todoSvc.GetAll())
+		todoItems, err := todoSvc.GetAll()
+		if err != nil {
+			log.Println(err)
+			writer.WriteHeader(http.StatusInternalServerError)
+		}
+		b, err := json.Marshal(todoItems)
 		if err != nil {
 			log.Println(err)
 			writer.WriteHeader(http.StatusBadRequest)
 			return
+		}
+		_, err = writer.Write(b)
+		if err != nil {
+			log.Println(err)
 		}
 		writer.WriteHeader(http.StatusOK)
 	})
@@ -52,7 +60,14 @@ func NewServer(todoSvc *todo.Service) *Server {
 			writer.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		results := todoSvc.Search(query)
+		results, err := todoSvc.Search(query)
+
+		if err != nil {
+			log.Println(err)
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		b, err := json.Marshal(results)
 		if err != nil {
 			writer.WriteHeader(http.StatusInternalServerError)
