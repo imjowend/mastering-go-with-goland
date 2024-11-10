@@ -5,5 +5,8 @@ GET http://localhost:8080/todo
 POST http://localhost:8080/todo
 
 {
-"item": "play valorant"
+"item": "go shopping"
 }
+
+### GET request to search for a TODO
+GET localhost:8080/todo?q=Shop
