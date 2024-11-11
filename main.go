@@ -7,6 +7,8 @@ import (
 	"log"
 )
 
+// Command + K to see changes to commit
+
 func main() {
 
 	d, err := db.New("postgres", "example", "localhost", "postgres", 5432)
