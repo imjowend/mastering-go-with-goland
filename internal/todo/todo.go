@@ -9,7 +9,12 @@ import (
 )
 
 type Service struct {
-	db *db.DB
+	db Manager
+}
+
+type Manager interface {
+	InsertItem(ctx context.Context, item db.Item) error
+	GetAllItems(ctx context.Context) ([]db.Item, error)
 }
 
 type Item struct {
@@ -17,7 +22,7 @@ type Item struct {
 	Status string `json:"status"`
 }
 
-func NewService(db *db.DB) *Service {
+func NewService(db Manager) *Service {
 	return &Service{
 		db: db,
 	}
